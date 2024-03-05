@@ -1,18 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 
-public class settings : MonoBehaviour
+public class Settings
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    public const float itemFadeDuration = 0.35f;
+    public const float targetAlpha = 0.45f;
 }

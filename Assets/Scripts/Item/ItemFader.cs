@@ -1,18 +1,31 @@
-using System.Collections;
-using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 
+[RequireComponent(typeof(SpriteRenderer))]
 public class ItemFader : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    private SpriteRenderer spriteRenderer;
+
+    private void Awake()
     {
-        
+        spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
-    // Update is called once per frame
-    void Update()
+    /// <summary>
+    /// Öð½¥»Ö¸´ÑÕÉ«
+    /// </summary>
+    public void FadeIn()
     {
-        
+        Color targetColor = new Color(1, 1, 1, 1);
+        spriteRenderer.DOColor(targetColor, Settings.itemFadeDuration);
+    }
+
+    /// <summary>
+    /// Öð½¥°ëÍ¸Ã÷
+    /// </summary>
+    public void FadeOut()
+    {
+        Color targetColor = new Color(1, 1, 1, Settings.targetAlpha);
+        spriteRenderer.DOColor(targetColor, Settings.itemFadeDuration);
     }
 }
