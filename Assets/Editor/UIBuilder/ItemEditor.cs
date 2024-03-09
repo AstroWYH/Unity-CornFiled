@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.UIElements;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
 using System;
@@ -9,14 +10,12 @@ public class ItemEditor : EditorWindow
 {
     //[SerializeField]
     //private VisualTreeAsset m_VisualTreeAsset = default;
-
     private ItemDataList_SO dataBase;
-
     private VisualTreeAsset itemRowTemplate;
-
     private ListView itemListView;
-
     private List<ItemDetails> itemList = new List<ItemDetails>();
+    private ScrollView itemDetailsSection;
+    private ItemDetails activeItem;
 
     [MenuItem("AstroWYH/ItemEditor")]
     public static void ShowExample()
@@ -42,12 +41,11 @@ public class ItemEditor : EditorWindow
         var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/Editor/UIBuilder/ItemEditor.uxml");
         VisualElement labelFromUXML = visualTree.Instantiate();
         root.Add(labelFromUXML);
-
         // Item模板的面板赋值
         itemRowTemplate = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/Editor/UIBuilder/ItemRowTemplate.uxml");
-
-        // ItemListView赋值
+        // 变量赋值
         itemListView = root.Q<VisualElement>("ItemList").Q<ListView>("ListView");
+        itemDetailsSection = root.Q<ScrollView>("ItemDetails");
 
         LoadDataBase();
 
@@ -62,7 +60,6 @@ public class ItemEditor : EditorWindow
             var path = AssetDatabase.GUIDToAssetPath(dataArray[0]);
             dataBase = AssetDatabase.LoadAssetAtPath(path, typeof(ItemDataList_SO)) as ItemDataList_SO;
         }
-
         itemList = dataBase.itemDetailsList;
         // 如果不标记，则无法保存数据
         EditorUtility.SetDirty(dataBase);
@@ -73,7 +70,6 @@ public class ItemEditor : EditorWindow
     {
         // 定义一个 Func 委托，它返回一个 VisualElement 对象。这个委托表示如何创建列表中的每一项。
         Func<VisualElement> makeItem = () => itemRowTemplate.CloneTree();
-
         // 定义一个 Action 委托，它接受一个 VisualElement 对象和一个整数作为参数。这个委托表示如何将数据绑定到列表中的每一项。
         Action<VisualElement, int> bindItem = (e, i) =>
         {
@@ -85,17 +81,32 @@ public class ItemEditor : EditorWindow
                 e.Q<Label>("Name").text = itemList[i] == null ? "NO ITEM" : itemList[i].itemName;
             }
         };
-
         itemListView.fixedItemHeight = 60;
-
         // 将数据源设置为 itemList
         itemListView.itemsSource = itemList;
-
         // 将创建项的委托设置为 makeItem
         itemListView.makeItem = makeItem;
-
         // 将绑定项的委托设置为 bindItem
         itemListView.bindItem = bindItem;
+        itemListView.onSelectionChange += OnListSelectionChange;
+        //右侧信息面板不可见
+        itemDetailsSection.visible = false;
     }
 
+    private void OnListSelectionChange(IEnumerable<object> selectedItem)
+    {
+        activeItem = (ItemDetails)selectedItem.First();
+        GetItemDetails();
+        itemDetailsSection.visible = true;
+    }
+
+    private void GetItemDetails()
+    {
+        itemDetailsSection.MarkDirtyRepaint();
+        itemDetailsSection.Q<IntegerField>("ItemID").value = activeItem.itemID;
+        itemDetailsSection.Q<IntegerField>("ItemID").RegisterValueChangedCallback(evt =>
+        {
+            activeItem.itemID = evt.newValue;
+        });
+    }
 }
