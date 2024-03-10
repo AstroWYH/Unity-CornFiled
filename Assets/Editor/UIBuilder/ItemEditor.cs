@@ -13,9 +13,9 @@ public class ItemEditor : EditorWindow
     private ItemDataList_SO dataBase;
     private VisualTreeAsset itemRowTemplate; // 左侧列表的每一栏
     private ListView itemListView; // 左侧的列表
-    private List<ItemDetails> itemList = new List<ItemDetails>(); // 左侧的列表
-    private ScrollView itemDetailsSection; // 右侧的详细信息
-    private ItemDetails activeItem; // 右侧的详细信息
+    private List<ItemDetails> itemList = new List<ItemDetails>(); // 右侧的列表
+    private ScrollView itemDetailsSection; // 右侧的滚动条
+    private ItemDetails activeItem; // 右侧的一条
     //默认预览图片
     private Sprite defaultIcon;
     private VisualElement iconPreview;
@@ -52,11 +52,32 @@ public class ItemEditor : EditorWindow
         itemListView = root.Q<VisualElement>("ItemList").Q<ListView>("ListView");
         itemDetailsSection = root.Q<ScrollView>("ItemDetails");
         iconPreview = itemDetailsSection.Q<VisualElement>("Icon");
-
+        //获得按键
+        root.Q<Button>("AddButton").clicked += OnAddItemClicked;
+        root.Q<Button>("DeleteButton").clicked += OnDeleteClicked;
+        //加载数据
         LoadDataBase();
-
+        //生成ListView
         GenerateListView();
     }
+
+    #region 按键事件
+    private void OnDeleteClicked()
+    {
+        itemList.Remove(activeItem);
+        itemListView.Rebuild();
+        itemDetailsSection.visible = false;
+    }
+
+    private void OnAddItemClicked()
+    {
+        ItemDetails newItem = new ItemDetails();
+        newItem.itemName = "NEW ITEM";
+        newItem.itemID = 1001 + itemList.Count;
+        itemList.Add(newItem);
+        itemListView.Rebuild();
+    }
+    #endregion
 
     private void LoadDataBase()
     {
@@ -128,7 +149,6 @@ public class ItemEditor : EditorWindow
         {
             Sprite newIcon = evt.newValue as Sprite;
             activeItem.itemIcon = newIcon;
-
             iconPreview.style.backgroundImage = newIcon == null ? defaultIcon.texture : newIcon.texture;
             itemListView.Rebuild();
         });

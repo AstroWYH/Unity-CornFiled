@@ -4,14 +4,14 @@
         <ui:VisualElement name="ItemList" style="flex-grow: 0; height: 100%; width: 30%;">
             <ui:VisualElement name="Header" style="flex-grow: 0; height: auto; flex-direction: row; justify-content: space-between;">
                 <ui:Label tabindex="-1" text="ItemList" parse-escape-sequences="true" display-tooltip-when-elided="true" style="font-size: 20px; -unity-font-style: bold;" />
-                <ui:Button text="+" parse-escape-sequences="true" display-tooltip-when-elided="true" />
+                <ui:Button text="+" parse-escape-sequences="true" display-tooltip-when-elided="true" name="AddButton" />
             </ui:VisualElement>
             <ui:ListView focusable="true" name="ListView" reorderable="true" show-border="true" style="flex-grow: 1;" />
         </ui:VisualElement>
         <ui:ScrollView name="ItemDetails" style="width: 70%; flex-grow: 1;">
             <ui:VisualElement name="Header" style="flex-grow: 0; height: auto; flex-direction: row; justify-content: space-between;">
                 <ui:Label tabindex="-1" text="Details Infomation" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Header" style="font-size: 20px; -unity-font-style: bold;" />
-                <ui:Button text="Delete" parse-escape-sequences="true" display-tooltip-when-elided="true" style="background-color: rgb(202, 148, 75);" />
+                <ui:Button text="Delete" parse-escape-sequences="true" display-tooltip-when-elided="true" name="DeleteButton" style="background-color: rgb(202, 148, 75);" />
             </ui:VisualElement>
             <ui:VisualElement name="Content" style="flex-grow: 1; height: auto;">
                 <ui:VisualElement name="Row1" style="flex-grow: 1; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-left-color: rgba(159, 145, 145, 0); border-right-color: rgba(159, 145, 145, 0); border-top-color: rgba(159, 145, 145, 0); border-bottom-color: rgba(159, 145, 145, 0); height: auto; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; display: flex; opacity: 1; background-color: rgb(245, 232, 255);">
