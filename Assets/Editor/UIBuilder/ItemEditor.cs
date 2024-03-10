@@ -11,11 +11,14 @@ public class ItemEditor : EditorWindow
     //[SerializeField]
     //private VisualTreeAsset m_VisualTreeAsset = default;
     private ItemDataList_SO dataBase;
-    private VisualTreeAsset itemRowTemplate;
-    private ListView itemListView;
-    private List<ItemDetails> itemList = new List<ItemDetails>();
-    private ScrollView itemDetailsSection;
-    private ItemDetails activeItem;
+    private VisualTreeAsset itemRowTemplate; // 左侧列表的每一栏
+    private ListView itemListView; // 左侧的列表
+    private List<ItemDetails> itemList = new List<ItemDetails>(); // 左侧的列表
+    private ScrollView itemDetailsSection; // 右侧的详细信息
+    private ItemDetails activeItem; // 右侧的详细信息
+    //默认预览图片
+    private Sprite defaultIcon;
+    private VisualElement iconPreview;
 
     [MenuItem("AstroWYH/ItemEditor")]
     public static void ShowExample()
@@ -43,9 +46,12 @@ public class ItemEditor : EditorWindow
         root.Add(labelFromUXML);
         // Item模板的面板赋值
         itemRowTemplate = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/Editor/UIBuilder/ItemRowTemplate.uxml");
+        //拿默认Icon图片
+        defaultIcon = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/M Studio/Art/Items/Icons/icon_M.png");
         // 变量赋值
         itemListView = root.Q<VisualElement>("ItemList").Q<ListView>("ListView");
         itemDetailsSection = root.Q<ScrollView>("ItemDetails");
+        iconPreview = itemDetailsSection.Q<VisualElement>("Icon");
 
         LoadDataBase();
 
@@ -107,6 +113,24 @@ public class ItemEditor : EditorWindow
         itemDetailsSection.Q<IntegerField>("ItemID").RegisterValueChangedCallback(evt =>
         {
             activeItem.itemID = evt.newValue;
+        });
+
+        itemDetailsSection.Q<TextField>("ItemName").value = activeItem.itemName;
+        itemDetailsSection.Q<TextField>("ItemName").RegisterValueChangedCallback(evt =>
+        {
+            activeItem.itemName = evt.newValue;
+            itemListView.Rebuild();
+        });
+
+        iconPreview.style.backgroundImage = activeItem.itemIcon == null ? defaultIcon.texture : activeItem.itemIcon.texture;
+        itemDetailsSection.Q<ObjectField>("ItemIcon").value = activeItem.itemIcon;
+        itemDetailsSection.Q<ObjectField>("ItemIcon").RegisterValueChangedCallback(evt =>
+        {
+            Sprite newIcon = evt.newValue as Sprite;
+            activeItem.itemIcon = newIcon;
+
+            iconPreview.style.backgroundImage = newIcon == null ? defaultIcon.texture : newIcon.texture;
+            itemListView.Rebuild();
         });
     }
 }
