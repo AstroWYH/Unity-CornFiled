@@ -1,26 +1,28 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEditor.UIElements;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
-using System;
+
 
 public class ItemEditor : EditorWindow
 {
-    //[SerializeField]
-    //private VisualTreeAsset m_VisualTreeAsset = default;
     private ItemDataList_SO dataBase;
-    private VisualTreeAsset itemRowTemplate; // ×ó²àÁĞ±íµÄÃ¿Ò»À¸
-    private ListView itemListView; // ×ó²àµÄÁĞ±í
-    private List<ItemDetails> itemList = new List<ItemDetails>(); // ÓÒ²àµÄÁĞ±í
-    private ScrollView itemDetailsSection; // ÓÒ²àµÄ¹ö¶¯Ìõ
-    private ItemDetails activeItem; // ÓÒ²àµÄÒ»Ìõ
-    //Ä¬ÈÏÔ¤ÀÀÍ¼Æ¬
-    private Sprite defaultIcon;
-    private VisualElement iconPreview;
+    private List<ItemDetails> itemList = new List<ItemDetails>();
+    private VisualTreeAsset itemRowTemplate;
+    private ScrollView itemDetailsSection;
+    private ItemDetails activeItem;
 
-    [MenuItem("AstroWYH/ItemEditor")]
+    //é»˜è®¤é¢„è§ˆå›¾ç‰‡
+    private Sprite defaultIcon;
+
+    private VisualElement iconPreview;
+    //è·å¾—VisualElement
+    private ListView itemListView;
+
+    [MenuItem("Hanbabang/ItemEditor")]
     public static void ShowExample()
     {
         ItemEditor wnd = GetWindow<ItemEditor>();
@@ -33,35 +35,37 @@ public class ItemEditor : EditorWindow
         VisualElement root = rootVisualElement;
 
         // VisualElements objects can contain other VisualElement following a tree hierarchy.
-        //VisualElement label = new Label("Hello World! From C#");
-        //root.Add(label);
+        // VisualElement label = new Label("Hello World! From C#");
+        // root.Add(label);
 
-        // Instantiate UXML
-        //VisualElement labelFromUXML = m_VisualTreeAsset.Instantiate();
-        //root.Add(labelFromUXML);
-
-        // ItemEditorµÄÃæ°å
-        var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/Editor/UIBuilder/ItemEditor.uxml");
+        // Import UXML
+        var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/Editor/UI Builder/ItemEditor.uxml");
         VisualElement labelFromUXML = visualTree.Instantiate();
         root.Add(labelFromUXML);
-        // ItemÄ£°åµÄÃæ°å¸³Öµ
-        itemRowTemplate = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/Editor/UIBuilder/ItemRowTemplate.uxml");
-        //ÄÃÄ¬ÈÏIconÍ¼Æ¬
+
+        //æ‹¿åˆ°æ¨¡ç‰ˆæ•°æ®
+        itemRowTemplate = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/Editor/UI Builder/ItemRowTemplate.uxml");
+
+        //æ‹¿é»˜è®¤Iconå›¾ç‰‡
         defaultIcon = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/M Studio/Art/Items/Icons/icon_M.png");
-        // ±äÁ¿¸³Öµ
+
+        //å˜é‡èµ‹å€¼
         itemListView = root.Q<VisualElement>("ItemList").Q<ListView>("ListView");
         itemDetailsSection = root.Q<ScrollView>("ItemDetails");
         iconPreview = itemDetailsSection.Q<VisualElement>("Icon");
-        //»ñµÃ°´¼ü
+
+
+        //è·å¾—æŒ‰é”®
         root.Q<Button>("AddButton").clicked += OnAddItemClicked;
         root.Q<Button>("DeleteButton").clicked += OnDeleteClicked;
-        //¼ÓÔØÊı¾İ
+        //åŠ è½½æ•°æ®
         LoadDataBase();
-        //Éú³ÉListView
+
+        //ç”ŸæˆListView
         GenerateListView();
     }
 
-    #region °´¼üÊÂ¼ş
+    #region æŒ‰é”®äº‹ä»¶
     private void OnDeleteClicked()
     {
         itemList.Remove(activeItem);
@@ -82,41 +86,41 @@ public class ItemEditor : EditorWindow
     private void LoadDataBase()
     {
         var dataArray = AssetDatabase.FindAssets("ItemDataList_SO");
+
         if (dataArray.Length > 1)
         {
             var path = AssetDatabase.GUIDToAssetPath(dataArray[0]);
             dataBase = AssetDatabase.LoadAssetAtPath(path, typeof(ItemDataList_SO)) as ItemDataList_SO;
         }
+
         itemList = dataBase.itemDetailsList;
-        // Èç¹û²»±ê¼Ç£¬ÔòÎŞ·¨±£´æÊı¾İ
+        //å¦‚æœä¸æ ‡è®°åˆ™æ— æ³•ä¿å­˜æ•°æ®
         EditorUtility.SetDirty(dataBase);
-        Debug.Log(itemList[0].itemID);
+        // Debug.Log(itemList[0].itemID);
     }
 
     private void GenerateListView()
     {
-        // ¶¨ÒåÒ»¸ö Func Î¯ÍĞ£¬Ëü·µ»ØÒ»¸ö VisualElement ¶ÔÏó¡£Õâ¸öÎ¯ÍĞ±íÊ¾ÈçºÎ´´½¨ÁĞ±íÖĞµÄÃ¿Ò»Ïî¡£
         Func<VisualElement> makeItem = () => itemRowTemplate.CloneTree();
-        // ¶¨ÒåÒ»¸ö Action Î¯ÍĞ£¬Ëü½ÓÊÜÒ»¸ö VisualElement ¶ÔÏóºÍÒ»¸öÕûÊı×÷Îª²ÎÊı¡£Õâ¸öÎ¯ÍĞ±íÊ¾ÈçºÎ½«Êı¾İ°ó¶¨µ½ÁĞ±íÖĞµÄÃ¿Ò»Ïî¡£
+
         Action<VisualElement, int> bindItem = (e, i) =>
         {
             if (i < itemList.Count)
             {
-                // Èç¹ûÊı¾İÁĞ±íÖĞµÄÏî´æÔÚ£¬Ôò½«ÏîµÄÍ¼±êºÍÃû³Æ°ó¶¨µ½ÁĞ±íÏîÖĞ¡£
                 if (itemList[i].itemIcon != null)
                     e.Q<VisualElement>("Icon").style.backgroundImage = itemList[i].itemIcon.texture;
                 e.Q<Label>("Name").text = itemList[i] == null ? "NO ITEM" : itemList[i].itemName;
             }
         };
-        itemListView.fixedItemHeight = 60;
-        // ½«Êı¾İÔ´ÉèÖÃÎª itemList
+
+        itemListView.fixedItemHeight = 50;  //æ ¹æ®éœ€è¦é«˜åº¦è°ƒæ•´æ•°å€¼
         itemListView.itemsSource = itemList;
-        // ½«´´½¨ÏîµÄÎ¯ÍĞÉèÖÃÎª makeItem
         itemListView.makeItem = makeItem;
-        // ½«°ó¶¨ÏîµÄÎ¯ÍĞÉèÖÃÎª bindItem
         itemListView.bindItem = bindItem;
+
         itemListView.onSelectionChange += OnListSelectionChange;
-        //ÓÒ²àĞÅÏ¢Ãæ°å²»¿É¼û
+
+        //å³ä¾§ä¿¡æ¯é¢æ¿ä¸å¯è§
         itemDetailsSection.visible = false;
     }
 
@@ -130,6 +134,7 @@ public class ItemEditor : EditorWindow
     private void GetItemDetails()
     {
         itemDetailsSection.MarkDirtyRepaint();
+
         itemDetailsSection.Q<IntegerField>("ItemID").value = activeItem.itemID;
         itemDetailsSection.Q<IntegerField>("ItemID").RegisterValueChangedCallback(evt =>
         {
@@ -149,8 +154,65 @@ public class ItemEditor : EditorWindow
         {
             Sprite newIcon = evt.newValue as Sprite;
             activeItem.itemIcon = newIcon;
+
             iconPreview.style.backgroundImage = newIcon == null ? defaultIcon.texture : newIcon.texture;
             itemListView.Rebuild();
+        });
+
+        //å…¶ä»–æ‰€æœ‰å˜é‡çš„ç»‘å®š
+        itemDetailsSection.Q<ObjectField>("ItemSprite").value = activeItem.itemOnWorldSprite;
+        itemDetailsSection.Q<ObjectField>("ItemSprite").RegisterValueChangedCallback(evt =>
+        {
+            activeItem.itemOnWorldSprite = (Sprite)evt.newValue;
+        });
+
+        itemDetailsSection.Q<EnumField>("ItemType").Init(activeItem.itemType);
+        itemDetailsSection.Q<EnumField>("ItemType").value = activeItem.itemType;
+        itemDetailsSection.Q<EnumField>("ItemType").RegisterValueChangedCallback(evt =>
+        {
+            activeItem.itemType = (ItemType)evt.newValue;
+        });
+
+        itemDetailsSection.Q<TextField>("Description").value = activeItem.itemDescription;
+        itemDetailsSection.Q<TextField>("Description").RegisterValueChangedCallback(evt =>
+        {
+            activeItem.itemDescription = evt.newValue;
+        });
+
+        itemDetailsSection.Q<IntegerField>("ItemUseRadius").value = activeItem.itemUseRadius;
+        itemDetailsSection.Q<IntegerField>("ItemUseRadius").RegisterValueChangedCallback(evt =>
+        {
+            activeItem.itemUseRadius = evt.newValue;
+        });
+
+        itemDetailsSection.Q<Toggle>("CanPickedup").value = activeItem.canPickedup;
+        itemDetailsSection.Q<Toggle>("CanPickedup").RegisterValueChangedCallback(evt =>
+        {
+            activeItem.canPickedup = evt.newValue;
+        });
+
+        itemDetailsSection.Q<Toggle>("CanDropped").value = activeItem.canDropped;
+        itemDetailsSection.Q<Toggle>("CanDropped").RegisterValueChangedCallback(evt =>
+        {
+            activeItem.canDropped = evt.newValue;
+        });
+
+        itemDetailsSection.Q<Toggle>("CanCarried").value = activeItem.canCarried;
+        itemDetailsSection.Q<Toggle>("CanCarried").RegisterValueChangedCallback(evt =>
+        {
+            activeItem.canCarried = evt.newValue;
+        });
+
+        itemDetailsSection.Q<IntegerField>("Price").value = activeItem.itemPrice;
+        itemDetailsSection.Q<IntegerField>("Price").RegisterValueChangedCallback(evt =>
+        {
+            activeItem.itemPrice = evt.newValue;
+        });
+
+        itemDetailsSection.Q<Slider>("SellPercentage").value = activeItem.sellPercentage;
+        itemDetailsSection.Q<Slider>("SellPercentage").RegisterValueChangedCallback(evt =>
+        {
+            activeItem.sellPercentage = evt.newValue;
         });
     }
 }
