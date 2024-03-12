@@ -92,7 +92,7 @@ MonoBehaviour:
     itemOnWorldSprite: {fileID: 21300000, guid: 0d5f887d0ba144b7180f3e33336beac5, type: 3}
     itemDescription: 
     itemUseRadius: 0
-    canPickedup: 0
+    canPickedup: 1
     canDropped: 0
     canCarried: 0
     itemPrice: 0
