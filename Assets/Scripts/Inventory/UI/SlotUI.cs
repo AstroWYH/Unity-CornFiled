@@ -15,6 +15,7 @@ namespace MFarm.Inventory
         [Header("格子类型")]
         public SlotType slotType;
         public bool isSelected;
+        public int slotIndex;
 
         //物品信息
         public ItemDetails itemDetails;
