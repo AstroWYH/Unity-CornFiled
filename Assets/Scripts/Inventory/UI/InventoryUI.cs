@@ -10,6 +10,10 @@ namespace MFarm.Inventory
     {
         [SerializeField] private SlotUI[] playerSlots;
 
+        [Header("玩家背包UI")]
+        [SerializeField] private GameObject bagUI;
+        private bool bagOpened;
+
         private void OnEnable()
         {
             EventHandler.UpdateInventoryUI += OnUpdateInventoryUI;
@@ -19,12 +23,22 @@ namespace MFarm.Inventory
         {
             EventHandler.UpdateInventoryUI -= OnUpdateInventoryUI;
         }
+
         private void Start()
         {
             //给每一个格子序号
             for (int i = 0; i < playerSlots.Length; i++)
             {
                 playerSlots[i].slotIndex = i;
+            }
+            bagOpened = bagUI.activeInHierarchy;
+        }
+
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.B))
+            {
+                OpenBagUI();
             }
         }
 
@@ -52,6 +66,15 @@ namespace MFarm.Inventory
                     }
                     break;
             }
+        }
+
+        /// <summary>
+        /// 打开关闭背包UI，Button调用事件
+        /// </summary>
+        public void OpenBagUI()
+        {
+            bagOpened = !bagOpened;
+            bagUI.SetActive(bagOpened);
         }
     }
 }

@@ -24,7 +24,7 @@ namespace MFarm.Inventory
         private void Start()
         {
             isSelected = false;
-            if (itemDetails.itemID == 0)
+            if (itemDetails == null)
             {
                 UpdateEmptySlot();
             }
