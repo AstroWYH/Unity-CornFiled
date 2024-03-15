@@ -76,5 +76,26 @@ namespace MFarm.Inventory
             bagOpened = !bagOpened;
             bagUI.SetActive(bagOpened);
         }
+
+
+        /// <summary>
+        /// 更新Slot高亮显示
+        /// </summary>
+        /// <param name="index">序号</param>
+        public void UpdateSlotHightlight(int index)
+        {
+            foreach (var slot in playerSlots)
+            {
+                if (slot.isSelected && slot.slotIndex == index)
+                {
+                    slot.slotHightlight.gameObject.SetActive(true);
+                }
+                else
+                {
+                    slot.isSelected = false;
+                    slot.slotHightlight.gameObject.SetActive(false);
+                }
+            }
+        }
     }
 }

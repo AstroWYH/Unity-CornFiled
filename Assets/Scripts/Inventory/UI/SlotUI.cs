@@ -1,10 +1,11 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace MFarm.Inventory
 {
-    public class SlotUI : MonoBehaviour
+    public class SlotUI : MonoBehaviour, IPointerClickHandler
     {
         [Header("组件获取")]
         [SerializeField] private Image slotImage;
@@ -20,6 +21,8 @@ namespace MFarm.Inventory
         //物品信息
         public ItemDetails itemDetails;
         public int itemAmount;
+
+        public InventoryUI inventoryUI => GetComponentInParent<InventoryUI>();
 
         private void Start()
         {
@@ -58,6 +61,13 @@ namespace MFarm.Inventory
             slotImage.enabled = false;
             amountText.text = string.Empty;
             button.interactable = false;
+        }
+
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            if (itemDetails == null) return;
+            isSelected = !isSelected;
+            inventoryUI.UpdateSlotHightlight(slotIndex);
         }
     }
 }
