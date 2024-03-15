@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace MFarm.Inventory
 {
-    public class SlotUI : MonoBehaviour, IPointerClickHandler
+    public class SlotUI : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
         [Header("组件获取")]
         [SerializeField] private Image slotImage;
@@ -68,6 +68,21 @@ namespace MFarm.Inventory
             if (itemDetails == null) return;
             isSelected = !isSelected;
             inventoryUI.UpdateSlotHightlight(slotIndex);
+        }
+
+        public void OnBeginDrag(PointerEventData eventData)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void OnDrag(PointerEventData eventData)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void OnEndDrag(PointerEventData eventData)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }
