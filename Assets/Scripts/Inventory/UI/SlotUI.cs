@@ -72,17 +72,26 @@ namespace MFarm.Inventory
 
         public void OnBeginDrag(PointerEventData eventData)
         {
-            throw new System.NotImplementedException();
+            if (itemAmount != 0)
+            {
+                inventoryUI.dragItem.enabled = true;
+                inventoryUI.dragItem.sprite = slotImage.sprite;
+                inventoryUI.dragItem.SetNativeSize();
+
+                isSelected = true;
+                inventoryUI.UpdateSlotHightlight(slotIndex);
+            }
         }
 
         public void OnDrag(PointerEventData eventData)
         {
-            throw new System.NotImplementedException();
+            inventoryUI.dragItem.transform.position = Input.mousePosition;
         }
 
         public void OnEndDrag(PointerEventData eventData)
         {
-            throw new System.NotImplementedException();
+            inventoryUI.dragItem.enabled = false;
+             Debug.Log(eventData.pointerCurrentRaycast.gameObject);
         }
     }
 }

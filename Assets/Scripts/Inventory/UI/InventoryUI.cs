@@ -10,6 +10,9 @@ namespace MFarm.Inventory
     {
         [SerializeField] private SlotUI[] playerSlots;
 
+        [Header("ÍÏ×§Í¼Æ¬")]
+        public Image dragItem;
+
         [Header("Íæ¼Ò±³°üUI")]
         [SerializeField] private GameObject bagUI;
         private bool bagOpened;
