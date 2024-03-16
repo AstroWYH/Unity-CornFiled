@@ -91,7 +91,24 @@ namespace MFarm.Inventory
         public void OnEndDrag(PointerEventData eventData)
         {
             inventoryUI.dragItem.enabled = false;
-             Debug.Log(eventData.pointerCurrentRaycast.gameObject);
+            //Debug.Log(eventData.pointerCurrentRaycast.gameObject);
+
+            if (eventData.pointerCurrentRaycast.gameObject != null)
+            {
+                if (eventData.pointerCurrentRaycast.gameObject.GetComponent<SlotUI>() == null)
+                    return;
+
+                var targetSlot = eventData.pointerCurrentRaycast.gameObject.GetComponent<SlotUI>();
+                int targetIndex = targetSlot.slotIndex;
+
+                //在Player自身背包范围内交换
+                if (slotType == SlotType.Bag && targetSlot.slotType == SlotType.Bag)
+                {
+                    InventoryManager.Instance.SwapItem(slotIndex, targetIndex);
+                }
+                //清空所有高亮显示
+                inventoryUI.UpdateSlotHightlight(-1);
+            }
         }
     }
 }
