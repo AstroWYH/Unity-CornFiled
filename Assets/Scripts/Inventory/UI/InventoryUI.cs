@@ -8,7 +8,7 @@ namespace MFarm.Inventory
 {
     public class InventoryUI : MonoBehaviour
     {
-        [SerializeField] private SlotUI[] playerSlots;
+        public ItemTooltip itemTooltip;
 
         [Header("ÍÏ×§Í¼Æ¬")]
         public Image dragItem;
@@ -16,6 +16,8 @@ namespace MFarm.Inventory
         [Header("Íæ¼Ò±³°üUI")]
         [SerializeField] private GameObject bagUI;
         private bool bagOpened;
+
+        [SerializeField] private SlotUI[] playerSlots;
 
         private void OnEnable()
         {
