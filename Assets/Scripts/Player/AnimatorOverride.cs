@@ -23,4 +23,60 @@ public class AnimatorOverride : MonoBehaviour
             animatorNameDict.Add(anim.name, anim);
         }
     }
+
+    private void OnEnable()
+    {
+        EventHandler.ItemSelectedEvent += OnItemSelectedEvent;
+    }
+
+    private void OnDisable()
+    {
+        EventHandler.ItemSelectedEvent -= OnItemSelectedEvent;
+    }
+
+    private void OnItemSelectedEvent(ItemDetails itemDetails, bool isSelected)
+    {
+        //WORKFLOW:不同的工具返回不同的动画在这里补全
+        PartType currentType = itemDetails.itemType switch
+        {
+            ItemType.Seed => PartType.Carry,
+            ItemType.Commodity => PartType.Carry,
+            _ => PartType.None
+        };
+
+        if (isSelected == false)
+        {
+            currentType = PartType.None;
+            holdItem.enabled = false;
+        }
+        else
+        {
+            if (currentType == PartType.Carry)
+            {
+                holdItem.sprite = itemDetails.itemOnWorldSprite;
+                holdItem.enabled = true;
+            }
+            else
+            {
+                holdItem.enabled = false;
+            }
+        }
+
+        SwitchAnimator(currentType);
+    }
+
+    private void SwitchAnimator(PartType partType)
+    {
+        foreach (var item in animatorTypes)
+        {
+            if (item.partType == partType)
+            {
+                animatorNameDict[item.partName.ToString()].runtimeAnimatorController = item.overrideController;
+            }
+            else if (item.partType == PartType.None)
+            {
+                animatorNameDict[item.partName.ToString()].runtimeAnimatorController = item.overrideController;
+            }
+        }
+    }
 }
