@@ -17,6 +17,12 @@ public class TimeManager : Singleton<TimeManager>
         NewGameTime();
     }
 
+    private void Start()
+    {
+        EventHandler.CallGameDateEvent(gameHour, gameDay, gameMonth, gameYear, gameSeason);
+        EventHandler.CallGameMinuteEvent(gameMinute, gameHour);
+    }
+
     private void Update()
     {
         if (!gameClockPause)
@@ -90,8 +96,10 @@ public class TimeManager : Singleton<TimeManager>
                             }
                         }
                     }
+                    EventHandler.CallGameDateEvent(gameHour, gameDay, gameMonth, gameYear, gameSeason);
                 }
             }
+            EventHandler.CallGameMinuteEvent(gameMinute, gameHour);
         }
         Debug.Log("Second: " + gameSecond + " Minute: " + gameMinute);
     }

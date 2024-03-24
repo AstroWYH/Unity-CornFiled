@@ -24,4 +24,54 @@ public class TimeUI : MonoBehaviour
             clockParent.GetChild(i).gameObject.SetActive(false);
         }
     }
+
+    private void OnEnable()
+    {
+        EventHandler.GameMinuteEvent += OnGameMinuteEvent;
+        EventHandler.GameDateEvent += OnGameDateEvent;
+    }
+
+    private void OnDisable()
+    {
+        EventHandler.GameMinuteEvent -= OnGameMinuteEvent;
+        EventHandler.GameDateEvent -= OnGameDateEvent;
+    }
+    private void OnGameMinuteEvent(int minute, int hour)
+    {
+        timeText.text = hour.ToString("00") + ":" + minute.ToString("00");
+    }
+
+    private void OnGameDateEvent(int hour, int day, int month, int year, Season season)
+    {
+        dateText.text = year + "年" + month.ToString("00") + "月" + day.ToString("00") + "日";
+        seasonImage.sprite = seasonSprites[(int)season];
+        SwitchHourImage(hour);
+    }
+
+    /// <summary>
+    /// 根据小时切换时间块显示
+    /// </summary>
+    /// <param name="hour"></param>
+    private void SwitchHourImage(int hour)
+    {
+        int index = hour / 4;
+
+        if (index == 0)
+        {
+            foreach (var item in clockBlocks)
+            {
+                item.SetActive(false);
+            }
+        }
+        else
+        {
+            for (int i = 0; i < clockBlocks.Count; i++)
+            {
+                if (i < index + 1)
+                    clockBlocks[i].SetActive(true);
+                else
+                    clockBlocks[i].SetActive(false);
+            }
+        }
+    }
 }
