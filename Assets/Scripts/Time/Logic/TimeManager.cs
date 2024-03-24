@@ -34,6 +34,14 @@ public class TimeManager : Singleton<TimeManager>
                 tikTime -= Settings.secondThreshold;
                 UpdateGameTime();
             }
+
+            if (Input.GetKey(KeyCode.T))
+            {
+                for (int i = 0; i < 60; i++)
+                {
+                    UpdateGameTime();
+                }
+            }
         }
     }
 
@@ -96,8 +104,8 @@ public class TimeManager : Singleton<TimeManager>
                             }
                         }
                     }
-                    EventHandler.CallGameDateEvent(gameHour, gameDay, gameMonth, gameYear, gameSeason);
                 }
+                EventHandler.CallGameDateEvent(gameHour, gameDay, gameMonth, gameYear, gameSeason);
             }
             EventHandler.CallGameMinuteEvent(gameMinute, gameHour);
         }

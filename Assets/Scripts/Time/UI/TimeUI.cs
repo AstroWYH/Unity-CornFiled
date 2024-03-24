@@ -46,6 +46,7 @@ public class TimeUI : MonoBehaviour
         dateText.text = year + "Äê" + month.ToString("00") + "ÔÂ" + day.ToString("00") + "ÈÕ";
         seasonImage.sprite = seasonSprites[(int)season];
         SwitchHourImage(hour);
+        DayNightImageRotate(hour);
     }
 
     /// <summary>
@@ -73,5 +74,11 @@ public class TimeUI : MonoBehaviour
                     clockBlocks[i].SetActive(false);
             }
         }
+    }
+
+    private void DayNightImageRotate(int hour)
+    {
+        var target = new Vector3(0, 0, hour * 15 - 90);
+        dayNightImage.DORotate(target, 1f, RotateMode.Fast);
     }
 }
