@@ -109,6 +109,6 @@ public class TimeManager : Singleton<TimeManager>
             }
             EventHandler.CallGameMinuteEvent(gameMinute, gameHour);
         }
-        Debug.Log("Second: " + gameSecond + " Minute: " + gameMinute);
+        //Debug.Log("Second: " + gameSecond + " Minute: " + gameMinute);
     }
 }
