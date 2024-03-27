@@ -38,8 +38,12 @@ namespace MFarm.Transition
         /// <returns></returns>
         private IEnumerator Transition(string sceneName, Vector3 targetPosition)
         {
+            EventHandler.CallBeforeSceneUnloadEvent();
             yield return SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene());
             yield return LoadSceneSetActive(sceneName);
+            //移动人物坐标
+            EventHandler.CallMoveToPosition(targetPosition);
+            EventHandler.CallAfterSceneLoadedEvent();
         }
 
         /// <summary>

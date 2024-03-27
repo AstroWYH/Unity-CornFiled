@@ -6636,6 +6636,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1742911859}
     m_Modifications:
+    - target: {fileID: -2027217561497815795, guid: 357a8ce33451e8c4f8fb2913cb142b7d, type: 3}
+      propertyPath: itemDetails.itemID
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3526181744487315397, guid: 357a8ce33451e8c4f8fb2913cb142b7d, type: 3}
       propertyPath: m_Name
       value: Slot_Bag

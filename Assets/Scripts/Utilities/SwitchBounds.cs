@@ -3,9 +3,14 @@ using UnityEngine;
 
 public class SwitchBounds : MonoBehaviour
 {
-    private void Start()
+    private void OnEnable()
     {
-        SwitchConfinerShape();
+        EventHandler.AfterSceneLoadedEvent += SwitchConfinerShape;
+    }
+
+    private void OnDisable()
+    {
+        EventHandler.AfterSceneLoadedEvent -= SwitchConfinerShape;
     }
 
     //这段代码目的是，人物移到Bounds框的边界时，摄像机不会跟着再继续移动到外面去，适当时候会停止

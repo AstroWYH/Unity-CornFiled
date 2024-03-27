@@ -4806,7 +4806,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sceneToGo: 01.Filed
-  positionToGo: {x: 22.85, y: -11.01, z: 0}
+  positionToGo: {x: 41.5, y: -9.08, z: 0}
 --- !u!1 &1680383107
 GameObject:
   m_ObjectHideFlags: 0

@@ -22,11 +22,13 @@ namespace MFarm.Inventory
         private void OnEnable()
         {
             EventHandler.UpdateInventoryUI += OnUpdateInventoryUI;
+            EventHandler.BeforeSceneUnloadEvent += OnBeforeSceneUnloadedEvent;
         }
 
         private void OnDisable()
         {
             EventHandler.UpdateInventoryUI -= OnUpdateInventoryUI;
+            EventHandler.BeforeSceneUnloadEvent -= OnBeforeSceneUnloadedEvent;
         }
 
         private void Start()
@@ -45,6 +47,11 @@ namespace MFarm.Inventory
             {
                 OpenBagUI();
             }
+        }
+
+        private void OnBeforeSceneUnloadedEvent()
+        {
+            UpdateSlotHightlight(-1);
         }
 
         /// <summary>
