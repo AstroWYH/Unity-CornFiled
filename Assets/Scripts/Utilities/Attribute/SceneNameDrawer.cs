@@ -15,7 +15,12 @@ public class SceneNameDrawer : PropertyDrawer
         if (sceneIndex == -1)
             GetSceneNameArray(property);
 
-        EditorGUI.Popup(position, label, sceneIndex, sceneNames);
+        int oldIndex = sceneIndex;
+
+        sceneIndex = EditorGUI.Popup(position, label, sceneIndex, sceneNames);
+
+        if (oldIndex != sceneIndex)
+            property.stringValue = sceneNames[sceneIndex].text;
     }
 
     private void GetSceneNameArray(SerializedProperty property)
