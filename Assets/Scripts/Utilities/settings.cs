@@ -13,4 +13,7 @@ public class Settings
     public const int hourHold = 23;
     public const int dayHold = 30;
     public const int seasonHold = 3;
+
+    //Transition
+    public const float fadeDuration = 1.5f;
 }

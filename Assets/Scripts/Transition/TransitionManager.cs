@@ -10,6 +10,8 @@ namespace MFarm.Transition
     {
         [SceneName]
         public string startSceneName = string.Empty;
+        private CanvasGroup fadeCanvasGroup;
+        private bool isFade;
 
         private void OnEnable()
         {
@@ -24,11 +26,13 @@ namespace MFarm.Transition
         void Start()
         {
             StartCoroutine(LoadSceneSetActive(startSceneName));
+            fadeCanvasGroup = FindObjectOfType<CanvasGroup>();
         }
 
         private void OnTransitionEvent(string sceneToGo, Vector3 positionToGo)
         {
-            StartCoroutine(Transition(sceneToGo, positionToGo));
+            if (!isFade)
+                StartCoroutine(Transition(sceneToGo, positionToGo));
         }
 
         /// <summary>
@@ -40,11 +44,13 @@ namespace MFarm.Transition
         private IEnumerator Transition(string sceneName, Vector3 targetPosition)
         {
             EventHandler.CallBeforeSceneUnloadEvent();
+            yield return Fade(1);
             yield return SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene());
             yield return LoadSceneSetActive(sceneName);
             //移动人物坐标
             EventHandler.CallMoveToPosition(targetPosition);
             EventHandler.CallAfterSceneLoadedEvent();
+            yield return Fade(0);
         }
 
         /// <summary>
@@ -59,6 +65,30 @@ namespace MFarm.Transition
             Scene newScene = SceneManager.GetSceneAt(SceneManager.sceneCount - 1);
 
             SceneManager.SetActiveScene(newScene);
+        }
+
+        /// <summary>
+        /// 淡入淡出场景
+        /// </summary>
+        /// <param name="targetAlpha">1是黑，0是透明</param>
+        /// <returns></returns>
+        private IEnumerator Fade(float targetAlpha)
+        {
+            isFade = true;
+
+            fadeCanvasGroup.blocksRaycasts = true;
+
+            float speed = Mathf.Abs(fadeCanvasGroup.alpha - targetAlpha) / Settings.fadeDuration;
+
+            while (!Mathf.Approximately(fadeCanvasGroup.alpha, targetAlpha))
+            {
+                fadeCanvasGroup.alpha = Mathf.MoveTowards(fadeCanvasGroup.alpha, targetAlpha, speed * Time.deltaTime);
+                yield return null;
+            }
+
+            fadeCanvasGroup.blocksRaycasts = false;
+
+            isFade = false;
         }
     }
 }
